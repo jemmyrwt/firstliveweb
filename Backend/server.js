@@ -10,6 +10,12 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+// ✅ homepage route
+app.get("/", (req, res) => {
+  res.send("Server is running 🚀 API working fine");
+});
+
+// ✅ API routes
 app.use("/api/users", userRoutes);
 
 const PORT = process.env.PORT || 3000;
