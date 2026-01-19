@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Form</title>
+</head>
+<body>
+  <h2>Add User</h2>
+
+  <form action="/add-user" method="POST">
+    <input name="name" placeholder="Name" required />
+    <input name="email" placeholder="Email" required />
+    <button>Add</button>
+  </form>
+
+  <h3>Users</h3>
+  <ul id="list"></ul>
+
+  <script>
+    fetch("/users")
+      .then(res => res.json())
+      .then(data => {
+        const ul = document.getElementById("list");
+        data.forEach(u => {
+          const li = document.createElement("li");
+          li.innerText = u.name + " - " + u.email;
+          ul.appendChild(li);
+        });
+      });
+  </script>
+</body>
+</html>
