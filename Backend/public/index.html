@@ -1,52 +1,59 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZenTask</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zenith X Pro</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body>
+<body data-theme="dark">
 
-<!-- 🔐 AUTH BOX -->
-<div id="authBox" class="auth-box">
-  <h2 id="authTitle">🔐 Login</h2>
+<!-- ================= AUTH ================= -->
+<div id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <h1>Zenith X</h1>
+    <p id="authSub">Login to continue</p>
 
-  <input id="name" class="hidden" placeholder="Your name">
+    <input id="name" class="hidden" placeholder="Your name"/>
+    <input id="email" placeholder="Email"/>
+    <input id="password" type="password" placeholder="Password"/>
 
-  <input id="email" placeholder="Email">
-  
-  <div class="password-box">
-    <input id="password" type="password" placeholder="Password">
-    <span onclick="togglePassword()">👁️</span>
+    <button id="authBtn" onclick="submitAuth()">Login</button>
+    <p class="switch" id="authSwitch" onclick="toggleAuth()">Create new account</p>
   </div>
-
-  <button id="authBtn" onclick="login()">Login</button>
-
-  <p id="toggleText" onclick="toggleAuth()">Create account</p>
 </div>
 
-<!-- ✅ TODO APP -->
-<div id="todoBox" class="hidden">
-  <div class="app-container">
+<!-- ================= APP ================= -->
+<div id="appScreen" class="hidden">
 
-    <aside>
-      <h3>✔ ZenTask</h3>
-      <button onclick="logout()" class="logout">Logout</button>
-    </aside>
+  <div class="app-shell">
 
-    <main>
-      <h2 id="welcomeText">Hello 👋</h2>
-
-      <div class="add-task">
-        <input id="taskInput" placeholder="New task...">
-        <button onclick="addNewTask()">Add</button>
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-box"><i class="fas fa-bolt"></i></div>
+        <span>Zenith X</span>
       </div>
 
-      <ul id="taskList"></ul>
+      <div class="nav-btn active">Tasks</div>
+      <div class="nav-btn" onclick="logout()">Logout</div>
+    </aside>
+
+    <main class="workspace">
+      <header class="view-header">
+        <h1 id="welcomeText">Welcome 👋</h1>
+        <p id="live-clock"></p>
+      </header>
+
+      <div class="task-creator">
+        <input id="taskTitle" placeholder="Enter task...">
+        <button onclick="addTask()">+</button>
+      </div>
+
+      <div class="task-grid" id="taskGrid"></div>
     </main>
 
   </div>
