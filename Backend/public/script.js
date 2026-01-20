@@ -1,19 +1,16 @@
-/* ================= CONFIG ================= */
 const API = "https://firstliveweb.onrender.com";
 const token = localStorage.getItem("token");
 
-/* ================= STATE ================= */
-let tasks = [];
-let timer = null;
-let timeLeft = 1500;
-
-/* ================= AUTH CHECK ================= */
 if (!token) {
   alert("Please login first");
   window.location.href = "/";
 }
 
-/* ================= INIT ================= */
+let tasks = [];
+let timer = null;
+let timeLeft = 1500;
+
+/* INIT */
 function init() {
   setupNavigation();
   updateClock();
@@ -22,7 +19,7 @@ function init() {
 }
 init();
 
-/* ================= CLOCK ================= */
+/* CLOCK */
 function updateClock() {
   const clock = document.getElementById("live-clock");
   if (clock) {
@@ -33,35 +30,19 @@ function updateClock() {
   }
 }
 
-/* ================= LOAD TODOS ================= */
+/* LOAD TASKS */
 async function loadTasks() {
-  try {
-    const res = await fetch(API + "/api/todos", {
-      headers: {
-        Authorization: "Bearer " + token
-      }
-    });
-
-    if (!res.ok) {
-      logout();
-      return;
-    }
-
-    tasks = await res.json();
-    renderTasks();
-    updateAnalytics();
-  } catch (err) {
-    alert("Failed to load tasks");
-  }
+  const res = await fetch(API + "/api/todos", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  tasks = await res.json();
+  renderTasks();
+  updateAnalytics();
 }
 
-/* ================= ADD TODO ================= */
+/* ADD TASK */
 document.getElementById("addBtn").addEventListener("click", async () => {
-  const title = document.getElementById("taskTitle").value;
-  const prio = document.getElementById("prioVal").value;
-  const cat = document.getElementById("catVal").value;
-  const date = document.getElementById("dateVal").value;
-
+  const title = taskTitle.value;
   if (!title.trim()) return;
 
   await fetch(API + "/api/todos", {
@@ -72,166 +53,86 @@ document.getElementById("addBtn").addEventListener("click", async () => {
     },
     body: JSON.stringify({
       title,
-      prio,
-      cat,
-      date
+      prio: prioVal.value,
+      cat: catVal.value,
+      date: dateVal.value
     })
   });
 
-  document.getElementById("taskTitle").value = "";
+  taskTitle.value = "";
   loadTasks();
 });
 
-/* ================= TOGGLE TODO ================= */
+/* TOGGLE */
 async function toggleTask(id) {
   await fetch(API + "/api/todos/" + id, {
     method: "PATCH",
-    headers: {
-      Authorization: "Bearer " + token
-    }
+    headers: { Authorization: "Bearer " + token }
   });
-
   loadTasks();
 }
 
-/* ================= DELETE TODO ================= */
+/* DELETE */
 async function deleteTask(id) {
   await fetch(API + "/api/todos/" + id, {
     method: "DELETE",
-    headers: {
-      Authorization: "Bearer " + token
-    }
+    headers: { Authorization: "Bearer " + token }
   });
-
   loadTasks();
 }
 
-/* ================= RENDER TASKS ================= */
+/* RENDER */
 function renderTasks() {
   const grid = document.getElementById("taskGrid");
-  if (!grid) return;
-
   grid.innerHTML = "";
 
   tasks.forEach(t => {
     const div = document.createElement("div");
     div.className = "task-card";
-
     div.innerHTML = `
-      <div onclick="toggleTask('${t._id}')" style="cursor:pointer">
-        <i class="${
-          t.done ? "fas fa-check-circle" : "far fa-circle"
-        }" style="font-size:1.5rem; color:${
-      t.done ? "#2ed573" : "#6366f1"
-    }"></i>
+      <div onclick="toggleTask('${t._id}')">
+        <i class="${t.done ? "fas fa-check-circle" : "far fa-circle"}"></i>
       </div>
-
       <div style="flex:1">
-        <h4 style="${
-          t.done ? "text-decoration:line-through; opacity:0.5" : ""
-        }">${t.title}</h4>
-
-        <div style="margin-top:5px">
-          <span class="prio-tag prio-${t.prio}">${t.prio}</span>
-          <small style="color:var(--text-s); margin-left:10px">
-            #${t.cat} | ${t.date || "No Deadline"}
-          </small>
-        </div>
+        <h4 style="${t.done ? "text-decoration:line-through;opacity:.5" : ""}">
+          ${t.title}
+        </h4>
+        <small>#${t.cat} | ${t.date || "No Deadline"}</small>
       </div>
-
-      <i class="fas fa-trash-alt"
-         style="color:var(--danger); cursor:pointer"
-         onclick="deleteTask('${t._id}')"></i>
+      <i class="fas fa-trash" onclick="deleteTask('${t._id}')"></i>
     `;
-
     grid.appendChild(div);
   });
 }
 
-/* ================= ANALYTICS ================= */
+/* ANALYTICS */
 function updateAnalytics() {
   const total = tasks.length;
   const done = tasks.filter(t => t.done).length;
   const pct = total === 0 ? 0 : Math.round((done / total) * 100);
 
-  const totalEl = document.getElementById("stat-total");
-  const effEl = document.getElementById("stat-efficiency");
-  const ringText = document.getElementById("ring-pct");
-  const ring = document.getElementById("ring");
-
-  if (totalEl) totalEl.innerText = total;
-  if (effEl) effEl.innerText = pct + "%";
-  if (ringText) ringText.innerText = pct + "%";
-
-  if (ring) {
-    const offset = 377 - (377 * pct) / 100;
-    ring.style.strokeDashoffset = offset;
-  }
+  stat-total.innerText = total;
+  stat-efficiency.innerText = pct + "%";
+  ring-pct.innerText = pct + "%";
+  ring.style.strokeDashoffset = 377 - (377 * pct) / 100;
 }
 
-/* ================= NAVIGATION ================= */
+/* NAV */
 function setupNavigation() {
-  const navs = document.querySelectorAll(".nav-btn, .m-nav-item");
-
-  navs.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const viewId = btn.getAttribute("data-view");
-
-      document.querySelectorAll(".view").forEach(v =>
-        v.classList.remove("active")
-      );
-
-      document.getElementById("view-" + viewId)?.classList.add("active");
-
-      navs.forEach(n => n.classList.remove("active"));
-      btn.classList.add("active");
-
-      if (viewId === "analytics") updateAnalytics();
-    });
+  document.querySelectorAll(".nav-btn, .m-nav-item").forEach(btn => {
+    btn.onclick = () => {
+      const v = btn.dataset.view;
+      document.querySelectorAll(".view").forEach(x => x.classList.remove("active"));
+      document.getElementById("view-" + v).classList.add("active");
+    };
   });
 }
 
-/* ================= FOCUS TIMER ================= */
-document.getElementById("timer-start")?.addEventListener("click", function () {
-  if (timer) {
-    clearInterval(timer);
-    timer = null;
-    this.innerText = "Start Focus";
-    return;
-  }
-
-  timer = setInterval(() => {
-    timeLeft--;
-    const m = Math.floor(timeLeft / 60);
-    const s = timeLeft % 60;
-    document.getElementById("timer-display").innerText =
-      `${m}:${s < 10 ? "0" : ""}${s}`;
-
-    if (timeLeft === 0) {
-      clearInterval(timer);
-      timer = null;
-    }
-  }, 1000);
-
-  this.innerText = "Pause Session";
-});
-
-document.getElementById("timer-reset")?.addEventListener("click", () => {
-  clearInterval(timer);
-  timer = null;
-  timeLeft = 1500;
-  document.getElementById("timer-display").innerText = "25:00";
-});
-
-/* ================= THEME ================= */
+/* THEME */
 function toggleTheme() {
   const body = document.body;
-  const isDark = body.getAttribute("data-theme") === "dark";
-  body.setAttribute("data-theme", isDark ? "light" : "dark");
-}
-
-/* ================= LOGOUT ================= */
-function logout() {
-  localStorage.clear();
-  window.location.href = "/";
+  body.setAttribute(
+    "data-theme",
+    body.getAttribute("data-theme") === "dark" ? "light" : "dark"
+  );
 }
