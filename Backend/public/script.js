@@ -1,9 +1,8 @@
 const API = "https://firstliveweb.onrender.com";
 
-/* ================= DOM ================= */
+/* DOM */
 const authBox = document.getElementById("authBox");
 const todoBox = document.getElementById("todoBox");
-const todoList = document.getElementById("taskList");
 
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -12,35 +11,47 @@ const taskInput = document.getElementById("taskInput");
 
 const authTitle = document.getElementById("authTitle");
 const authBtn = document.getElementById("authBtn");
+const toggleText = document.getElementById("toggleText");
+const taskList = document.getElementById("taskList");
 
-/* ================= STATE ================= */
-let token = localStorage.getItem("token");
 let isLogin = true;
+let token = localStorage.getItem("token");
 
-/* ================= AUTO LOGIN ================= */
-if (token) {
-  showTodos();
+/* AUTO LOGIN */
+if (token) showTodos();
+
+/* TOAST */
+function showToast(msg, type="success") {
+  const t = document.createElement("div");
+  t.className = `toast ${type}`;
+  t.innerText = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2500);
 }
 
-/* ================= TOGGLE LOGIN / REGISTER ================= */
+/* TOGGLE */
 function toggleAuth() {
   isLogin = !isLogin;
-
   authTitle.innerText = isLogin ? "🔐 Login" : "📝 Register";
   authBtn.innerText = isLogin ? "Login" : "Register";
-
-  // ✅ name field sirf register me dikhe
+  toggleText.innerText = isLogin ? "Create account" : "Back to login";
   nameInput.classList.toggle("hidden", isLogin);
 }
 
-/* ================= LOGIN / REGISTER ================= */
+/* SHOW/HIDE PASSWORD */
+function togglePassword() {
+  passwordInput.type =
+    passwordInput.type === "password" ? "text" : "password";
+}
+
+/* LOGIN / REGISTER */
 async function login() {
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
   const name = nameInput.value.trim();
 
   if (!email || !password || (!isLogin && !name)) {
-    alert("All fields required");
+    showToast("All fields required","error");
     return;
   }
 
@@ -52,99 +63,70 @@ async function login() {
     ? { email, password }
     : { name, email, password };
 
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
+  const res = await fetch(url,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(body)
+  });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.msg || "Error");
-      return;
-    }
-
-    // ✅ Register success → login screen
-    if (!isLogin) {
-      alert("Account created successfully. Now login.");
-      toggleAuth();
-      return;
-    }
-
-    // ✅ Login success
-    token = data.token;
-    localStorage.setItem("token", token);
-    localStorage.setItem("userName", data.user.name);
-
-    showTodos();
-  } catch (err) {
-    alert("Server error");
+  const data = await res.json();
+  if (!res.ok) {
+    showToast(data.msg,"error");
+    return;
   }
+
+  if (!isLogin) {
+    showToast("Account created 🎉");
+    toggleAuth();
+    return;
+  }
+
+  localStorage.setItem("token",data.token);
+  localStorage.setItem("userName",data.user.name);
+  showTodos();
 }
 
-/* ================= TODOS ================= */
+/* TODOS */
 function showTodos() {
   authBox.classList.add("hidden");
   todoBox.classList.remove("hidden");
-
   document.getElementById("welcomeText").innerText =
     "Hello " + localStorage.getItem("userName") + " 👋";
-
   loadTodos();
 }
 
 async function loadTodos() {
-  try {
-    const res = await fetch(API + "/api/todos", {
-      headers: { Authorization: "Bearer " + token }
-    });
-
-    if (!res.ok) {
-      logout();
-      return;
-    }
-
-    const todos = await res.json();
-    todoList.innerHTML = "";
-
-    todos.forEach(t => {
-      const div = document.createElement("div");
-      div.className = "task-card";
-      div.innerHTML = `
-        <span>${t.text}</span>
-        <button onclick="deleteTodo('${t._id}')">❌</button>
-      `;
-      todoList.appendChild(div);
-    });
-  } catch {
-    alert("Failed to load todos");
-  }
+  const res = await fetch(API+"/api/todos",{
+    headers:{ Authorization:"Bearer "+localStorage.getItem("token") }
+  });
+  const todos = await res.json();
+  taskList.innerHTML = "";
+  todos.forEach(t=>{
+    const li=document.createElement("li");
+    li.innerHTML=`${t.text} <button onclick="deleteTodo('${t._id}')">❌</button>`;
+    taskList.appendChild(li);
+  });
 }
 
 async function addNewTask() {
   if (!taskInput.value.trim()) return;
-
-  await fetch(API + "/api/todos", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token
+  await fetch(API+"/api/todos",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      Authorization:"Bearer "+localStorage.getItem("token")
     },
-    body: JSON.stringify({ text: taskInput.value })
+    body:JSON.stringify({text:taskInput.value})
   });
-
-  taskInput.value = "";
+  taskInput.value="";
   loadTodos();
 }
 
 async function deleteTodo(id) {
-  await fetch(API + "/api/todos/" + id, {
-    method: "DELETE",
-    headers: { Authorization: "Bearer " + token }
+  await fetch(API+"/api/todos/"+id,{
+    method:"DELETE",
+    headers:{ Authorization:"Bearer "+localStorage.getItem("token") }
   });
-
   loadTodos();
 }
 
