@@ -1,20 +1,25 @@
 import express from "express";
 import auth from "../middleware/auth.js";
-import {
-  getTodos,
-  addTodo,
-  deleteTodo
-} from "../controllers/todoController.js";
+import Todo from "../models/Todo.js";
 
 const router = express.Router();
 
-// ✅ GET all todos (only logged-in user)
-router.get("/", auth, getTodos);
+router.get("/", auth, async (req, res) => {
+  const todos = await Todo.find({ user: req.user.id });
+  res.json(todos);
+});
 
-// ✅ ADD new todo
-router.post("/", auth, addTodo);
+router.post("/", auth, async (req, res) => {
+  const todo = await Todo.create({
+    text: req.body.text,
+    user: req.user.id
+  });
+  res.json(todo);
+});
 
-// ✅ DELETE todo (only own todo)
-router.delete("/:id", auth, deleteTodo);
+router.delete("/:id", auth, async (req, res) => {
+  await Todo.deleteOne({ _id: req.params.id, user: req.user.id });
+  res.json({ success: true });
+});
 
 export default router;
