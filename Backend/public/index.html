@@ -2,28 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>🔥 Glass Todo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Manager</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <div class="container">
-    <h1>User Manager</h1>
-    <p class="subtitle">MongoDB + Express Live App</p>
+<div class="bg"></div>
 
-    <div class="card">
-      <input id="name" placeholder="Full Name" />
-      <input id="email" placeholder="Email Address" />
-      <button onclick="addUser()">Add User</button>
-    </div>
+<div class="app">
+  <h1>🔥 Glass Todo</h1>
+  <p class="subtitle">Modern Todo App (HTML + JS)</p>
 
-    <div class="list">
-      <h2>Users</h2>
-      <ul id="users"></ul>
-    </div>
+  <div class="input-box">
+    <input id="taskInput" placeholder="Enter your task..." />
+    <button onclick="addTodo()">➕</button>
   </div>
 
-  <script src="script.js"></script>
+  <div class="filters">
+    <button onclick="filterTodos('all')" class="active">All</button>
+    <button onclick="filterTodos('active')">Active</button>
+    <button onclick="filterTodos('done')">Done</button>
+  </div>
+
+  <ul id="todoList"></ul>
+
+  <div class="footer">
+    <span id="count">0 tasks</span>
+    <button class="clear" onclick="clearDone()">Clear Done</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
