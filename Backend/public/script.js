@@ -1,41 +1,63 @@
 const API = "https://firstliveweb.onrender.com";
 
-/* ================= DOM ================= */
+/* DOM */
+const authBox = document.getElementById("authBox");
+const todoBox = document.getElementById("todoBox");
 
-// AUTH (agar future me login screen add karo)
-const loginScreen = document.getElementById("loginScreen");
-const todoScreen = document.getElementById("todoScreen");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 
-// ZENTASK
 const taskInput = document.getElementById("taskInput");
 const taskList = document.getElementById("taskList");
-const welcomeText = document.getElementById("welcomeText");
 
-const totalCount = document.getElementById("totalCount");
-const pendingCount = document.getElementById("pendingCount");
-const doneCount = document.getElementById("doneCount");
+const authTitle = document.getElementById("authTitle");
 
-/* ================= STATE ================= */
-
+let isLogin = true;
 let token = localStorage.getItem("token");
-let tasks = [];
-let filter = "all";
-
-/* ================= INIT ================= */
 
 document.getElementById("dateText").innerText =
   new Date().toDateString();
 
-if (token) {
-  showTodoScreen();
+/* AUTO LOGIN */
+if (token) showTodos();
+
+/* AUTH */
+function toggleAuth() {
+  isLogin = !isLogin;
+  authTitle.innerText = isLogin ? "🔐 Login" : "📝 Register";
+  document.querySelector(".auth-box button").innerText =
+    isLogin ? "Login" : "Register";
+  document.querySelector(".auth-box p").innerText =
+    isLogin ? "Create account" : "Back to login";
 }
 
-/* ================= AUTH HELPERS ================= */
+async function login() {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+  if (!email || !password) return alert("Fill all fields");
 
-function showTodoScreen() {
-  if (loginScreen) loginScreen.style.display = "none";
-  if (todoScreen) todoScreen.style.display = "block";
-  loadTodos();
+  const url = isLogin
+    ? "/api/users/login"
+    : "/api/users/register";
+
+  const res = await fetch(API + url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await res.json();
+  if (!res.ok) return alert(data.msg || "Error");
+
+  if (!isLogin) {
+    alert("Account created. Login now.");
+    toggleAuth();
+    return;
+  }
+
+  token = data.token;
+  localStorage.setItem("token", token);
+  showTodos();
 }
 
 function logout() {
@@ -43,38 +65,34 @@ function logout() {
   location.reload();
 }
 
-/* ================= TODOS (API CONNECTED) ================= */
-
-async function loadTodos() {
-  try {
-    const res = await fetch(API + "/api/todos", {
-      headers: {
-        Authorization: "Bearer " + token
-      }
-    });
-
-    if (!res.ok) {
-      logout();
-      return;
-    }
-
-    tasks = await res.json();
-    renderTasks();
-    updateStats();
-  } catch (err) {
-    alert("Failed to load todos");
-  }
+/* TODOS */
+function showTodos() {
+  authBox.classList.add("hidden");
+  todoBox.classList.remove("hidden");
+  loadTodos();
 }
 
-async function addNewTask() {
-  const text = taskInput.value.trim();
-  const category = document.getElementById("categorySelect")?.value || "work";
-  const priority = document.getElementById("prioritySelect")?.value || "low";
+async function loadTodos() {
+  const res = await fetch(API + "/api/todos", {
+    headers: { Authorization: "Bearer " + token }
+  });
 
-  if (!text) {
-    alert("Kuch toh likho!");
-    return;
-  }
+  const todos = await res.json();
+  taskList.innerHTML = "";
+
+  todos.forEach(t => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span>${t.text}</span>
+      <button onclick="deleteTodo('${t._id}')">❌</button>
+    `;
+    taskList.appendChild(li);
+  });
+}
+
+async function addTodo() {
+  const text = taskInput.value.trim();
+  if (!text) return;
 
   await fetch(API + "/api/todos", {
     method: "POST",
@@ -82,96 +100,17 @@ async function addNewTask() {
       "Content-Type": "application/json",
       Authorization: "Bearer " + token
     },
-    body: JSON.stringify({
-      text,
-      category,
-      priority,
-      done: false
-    })
+    body: JSON.stringify({ text })
   });
 
   taskInput.value = "";
   loadTodos();
 }
 
-async function deleteTask(id) {
+async function deleteTodo(id) {
   await fetch(API + "/api/todos/" + id, {
     method: "DELETE",
-    headers: {
-      Authorization: "Bearer " + token
-    }
+    headers: { Authorization: "Bearer " + token }
   });
   loadTodos();
-}
-
-/* ================= UI HELPERS ================= */
-
-function toggleTask(id) {
-  // optional future: PATCH /api/todos/:id
-  alert("Complete feature next step me add karenge");
-}
-
-function filterTasks(type) {
-  filter = type;
-  document.querySelectorAll(".menu-item")
-    .forEach(m => m.classList.remove("active"));
-  event.target.classList.add("active");
-  renderTasks();
-}
-
-function renderTasks() {
-  taskList.innerHTML = "";
-
-  let filtered = tasks;
-
-  if (filter === "completed") {
-    filtered = tasks.filter(t => t.done);
-  } else if (filter !== "all") {
-    filtered = tasks.filter(t => t.category === filter);
-  }
-
-  filtered.forEach(task => {
-    const item = document.createElement("div");
-    item.className = `task-card ${task.done ? "completed" : ""}`;
-
-    item.innerHTML = `
-      <div class="task-info">
-        <div class="check-circle" onclick="toggleTask('${task._id}')"></div>
-        <div>
-          <span class="task-text">${task.text}</span><br>
-          <span class="tag ${
-            task.priority === "high" ? "priority-high" : "priority-low"
-          }">${task.priority}</span>
-          <span style="font-size:0.7rem;color:var(--text-sub)">
-            #${task.category || "work"}
-          </span>
-        </div>
-      </div>
-      <i class="fas fa-trash-alt delete-btn"
-         onclick="deleteTask('${task._id}')"></i>
-    `;
-
-    taskList.appendChild(item);
-  });
-}
-
-function updateStats() {
-  totalCount.innerText = tasks.length;
-  pendingCount.innerText = tasks.filter(t => !t.done).length;
-  doneCount.innerText = tasks.filter(t => t.done).length;
-}
-
-/* ================= THEME ================= */
-
-function toggleTheme() {
-  const body = document.body;
-  const icon = document.querySelector(".theme-toggle i");
-
-  if (body.getAttribute("data-theme") === "light") {
-    body.setAttribute("data-theme", "dark");
-    icon.className = "fas fa-sun";
-  } else {
-    body.setAttribute("data-theme", "light");
-    icon.className = "fas fa-moon";
-  }
 }
