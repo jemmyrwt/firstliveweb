@@ -14,14 +14,14 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ msg: "All fields required" });
     }
 
-    const existing = await User.findOne({ email });
-    if (existing) {
+    const exists = await User.findOne({ email });
+    if (exists) {
       return res.status(400).json({ msg: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await User.create({
+    await User.create({
       name,
       email,
       password: hashedPassword
@@ -43,8 +43,8 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ msg: "User not found" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
       return res.status(400).json({ msg: "Invalid password" });
     }
 
