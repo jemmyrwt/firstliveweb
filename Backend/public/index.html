@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZenTask - Ultimate Task Manager</title>
+  <title>ZenTask</title>
 
   <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -13,43 +13,47 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
-<body data-theme="light">
+<body>
 
-<div class="app-container">
+<!-- ===== AUTH ===== -->
+<div id="authBox" class="auth-box">
+  <h2 id="authTitle">🔐 Login</h2>
 
-  <!-- SIDEBAR -->
-  <aside>
-    <div class="logo"><i class="fas fa-check-double"></i> ZenTask</div>
-    <div class="menu-item active" onclick="filterTasks('all')">All Tasks</div>
-    <div class="menu-item" onclick="filterTasks('work')">Work</div>
-    <div class="menu-item" onclick="filterTasks('personal')">Personal</div>
-    <div class="menu-item" onclick="filterTasks('completed')">Completed</div>
-  </aside>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
 
-  <!-- MAIN -->
-  <main>
-    <div class="header-top">
-      <div>
-        <h2 id="welcomeText">Namaste 👋</h2>
-        <p id="dateText"></p>
-      </div>
-      <div class="theme-toggle" onclick="toggleTheme()">
-        <i class="fas fa-moon"></i>
-      </div>
-    </div>
-
-    <!-- ADD TASK -->
-    <div class="add-task-box">
-      <input id="taskInput" placeholder="Naya task likhein...">
-      <button onclick="addNewTask()">Add</button>
-    </div>
-
-    <!-- TASK LIST -->
-    <div class="task-list" id="taskList"></div>
-  </main>
+  <button onclick="login()">Login</button>
+  <p onclick="toggleAuth()">Create account</p>
 </div>
 
-<!-- JS -->
+<!-- ===== TODO APP ===== -->
+<div id="todoBox" class="hidden">
+
+  <div class="app-container">
+
+    <aside>
+      <div class="logo">✔ ZenTask</div>
+      <div class="menu-item active">All Tasks</div>
+      <div class="menu-item" onclick="logout()">Logout</div>
+    </aside>
+
+    <main>
+      <div class="header-top">
+        <h2 id="welcomeText">Namaste 👋</h2>
+        <span id="dateText"></span>
+      </div>
+
+      <div class="add-task-box">
+        <input id="taskInput" placeholder="New task...">
+        <button onclick="addTodo()">Add</button>
+      </div>
+
+      <ul id="taskList"></ul>
+    </main>
+
+  </div>
+</div>
+
 <script src="app.js"></script>
 </body>
 </html>
