@@ -1,8 +1,15 @@
 import mongoose from "mongoose";
 
-export default mongoose.model(
-  "Todo",
-  new mongoose.Schema({
-    text: String
-  })
-);
+const todoSchema = new mongoose.Schema({
+  text: {
+    type: String,
+    required: true
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  }
+});
+
+export default mongoose.model("Todo", todoSchema);
