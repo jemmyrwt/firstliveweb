@@ -15,14 +15,19 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+// ✅ STATIC FILES FIRST (VERY IMPORTANT)
 app.use(express.static(path.join(__dirname, "public")));
 
+// ✅ API ROUTES
 app.use("/api/users", userRoutes);
 app.use("/api/todos", todoRoutes);
 
-app.get("*", (req, res) => {
+// ✅ ONLY ROOT SERVES HTML
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Server running on", PORT));
+app.listen(PORT, () => {
+  console.log("Server running on", PORT);
+});
