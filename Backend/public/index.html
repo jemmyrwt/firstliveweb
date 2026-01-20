@@ -2,37 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🔥 Glass Todo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="style.css" />
+  <title>Secure Todo</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-<div class="bg"></div>
-
 <div class="app">
-  <h1>🔥 Glass Todo</h1>
-  <p class="subtitle">Modern Todo App (HTML + JS)</p>
 
-  <div class="input-box">
-    <input id="taskInput" placeholder="Enter your task..." />
-    <button onclick="addTodo()">➕</button>
+  <!-- LOGIN -->
+  <div id="authBox" class="glass">
+    <h2>🔐 Login</h2>
+    <input id="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <p onclick="toggleAuth()">Create account</p>
   </div>
 
-  <div class="filters">
-    <button onclick="filterTodos('all')" class="active">All</button>
-    <button onclick="filterTodos('active')">Active</button>
-    <button onclick="filterTodos('done')">Done</button>
+  <!-- TODO -->
+  <div id="todoBox" class="glass hidden">
+    <h2>🔥 My Todos</h2>
+
+    <div class="add">
+      <input id="todoInput" placeholder="New task..." />
+      <button onclick="addTodo()">+</button>
+    </div>
+
+    <ul id="todoList"></ul>
+
+    <button class="logout" onclick="logout()">Logout</button>
   </div>
 
-  <ul id="todoList"></ul>
-
-  <div class="footer">
-    <span id="count">0 tasks</span>
-    <button class="clear" onclick="clearDone()">Clear Done</button>
-  </div>
 </div>
 
-<script src="app.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
