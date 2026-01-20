@@ -1,25 +1,57 @@
-import Todo from "../models/Todo.js";
+import User from "../models/User.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-// GET
-export const getTodos = async (req, res) => {
-  const todos = await Todo.find({ user: req.user.id });
-  res.json(todos);
+// REGISTER
+export const registerUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ msg: "Email & password required" });
+    }
+
+    const exists = await User.findOne({ email });
+    if (exists) {
+      return res.status(400).json({ msg: "User already exists" });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      email,
+      password: hashed
+    });
+
+    res.json({ msg: "User registered successfully" });
+  } catch (err) {
+    res.status(500).json({ msg: "Server error" });
+  }
 };
 
-// POST
-export const addTodo = async (req, res) => {
-  const todo = await Todo.create({
-    text: req.body.text,
-    user: req.user.id
-  });
-  res.json(todo);
-};
+// LOGIN
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-// DELETE
-export const deleteTodo = async (req, res) => {
-  await Todo.deleteOne({
-    _id: req.params.id,
-    user: req.user.id
-  });
-  res.json({ success: true });
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ msg: "Invalid credentials" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ msg: "Invalid credentials" });
+    }
+
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.json({ token });
+  } catch (err) {
+    res.status(500).json({ msg: "Server error" });
+  }
 };
