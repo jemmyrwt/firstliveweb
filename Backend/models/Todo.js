@@ -8,7 +8,6 @@ const todoSchema = new mongoose.Schema(
     date: String,
     done: Boolean,
 
-    // 🔑 kis user ka todo
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
