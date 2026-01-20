@@ -1,85 +1,54 @@
 import { useEffect, useState } from "react";
 
-
-const API = "https://firstliveweb.onrender.com/api/users";
+const API = "https://firstliveweb.onrender.com/api/todos";
 
 export default function App() {
-  const [users, setUsers] = useState([]);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [todos, setTodos] = useState([]);
+  const [text, setText] = useState("");
 
-  const loadUsers = async () => {
+  const loadTodos = async () => {
     const res = await fetch(API);
-    const data = await res.json();
-    setUsers(data);
+    setTodos(await res.json());
   };
 
-  const addUser = async () => {
+  const addTodo = async () => {
+    if (!text) return;
     await fetch(API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email })
+      body: JSON.stringify({ text })
     });
-    setName("");
-    setEmail("");
-    loadUsers();
+    setText("");
+    loadTodos();
   };
 
-  const deleteUser = async (id) => {
+  const deleteTodo = async (id) => {
     await fetch(API + "/" + id, { method: "DELETE" });
-    loadUsers();
+    loadTodos();
   };
 
   useEffect(() => {
-    loadUsers();
+    loadTodos();
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-md p-6 rounded-xl shadow">
-        <h1 className="text-2xl font-bold mb-4 text-center">
-          User Manager
-        </h1>
+    <div className="app">
+      <h1>🔥 Todo App</h1>
 
-        <input
-          className="w-full border p-2 mb-2 rounded"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+      <input
+        placeholder="Add new task..."
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
 
-        <input
-          className="w-full border p-2 mb-2 rounded"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+      <button onClick={addTodo}>Add Todo</button>
 
-        <button
-          onClick={addUser}
-          className="w-full bg-blue-600 text-white p-2 rounded mb-4"
-        >
-          Add User
-        </button>
-
-        {users.map((u) => (
-          <div
-            key={u._id}
-            className="flex justify-between items-center bg-gray-50 p-2 mb-2 rounded"
-          >
-            <div>
-              <p className="font-semibold">{u.name}</p>
-              <p className="text-sm text-gray-500">{u.email}</p>
-            </div>
-            <button
-              onClick={() => deleteUser(u._id)}
-              className="text-red-500"
-            >
-              ✕
-            </button>
-          </div>
-        ))}
-      </div>
+      {todos.map(todo => (
+        <div className="todo" key={todo._id}>
+          <span>{todo.text}</span>
+          <button onClick={() => deleteTodo(todo._id)}>✕</button>
+        </div>
+      ))}
     </div>
   );
 }
