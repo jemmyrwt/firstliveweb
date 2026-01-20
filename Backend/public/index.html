@@ -11,51 +11,47 @@
 
 <body>
 
-<!-- ===== AUTH ===== -->
+<!-- 🔐 AUTH BOX -->
 <div id="authBox" class="auth-box">
   <h2 id="authTitle">🔐 Login</h2>
 
-  <!-- 👇 REGISTER के लिए -->
-  <input id="name" class="hidden" placeholder="Name">
+  <input id="name" class="hidden" placeholder="Your name">
 
   <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+  
+  <div class="password-box">
+    <input id="password" type="password" placeholder="Password">
+    <span onclick="togglePassword()">👁️</span>
+  </div>
 
-  <!-- ❗ VERY IMPORTANT -->
-  <button type="button" id="authBtn" onclick="login()">Login</button>
+  <button id="authBtn" onclick="login()">Login</button>
 
-  <p onclick="toggleAuth()">Create account</p>
+  <p id="toggleText" onclick="toggleAuth()">Create account</p>
 </div>
 
-<!-- ===== TODO APP ===== -->
+<!-- ✅ TODO APP -->
 <div id="todoBox" class="hidden">
-
   <div class="app-container">
 
     <aside>
-      <div class="logo">✔ ZenTask</div>
-      <div class="menu-item active">All Tasks</div>
-      <div class="menu-item" onclick="logout()">Logout</div>
+      <h3>✔ ZenTask</h3>
+      <button onclick="logout()" class="logout">Logout</button>
     </aside>
 
     <main>
-      <div class="header-top">
-        <h2 id="welcomeText">Namaste 👋</h2>
-        <span id="dateText"></span>
-      </div>
+      <h2 id="welcomeText">Hello 👋</h2>
 
-      <div class="add-task-box">
+      <div class="add-task">
         <input id="taskInput" placeholder="New task...">
-        <button type="button" onclick="addNewTask()">Add</button>
+        <button onclick="addNewTask()">Add</button>
       </div>
 
-      <div id="taskList"></div>
+      <ul id="taskList"></ul>
     </main>
 
   </div>
 </div>
 
-<!-- JS LAST -->
-<script src="script.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
