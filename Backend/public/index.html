@@ -1,40 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Secure Todo</title>
-  <link rel="stylesheet" href="style.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZenTask - Ultimate Task Manager</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
-<div class="app">
+<body data-theme="light">
 
-  <!-- LOGIN -->
-  <div id="authBox" class="glass">
-    <h2>🔐 Login</h2>
-    <input id="email" placeholder="Email" />
-    <input id="password" type="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-    <p onclick="toggleAuth()">Create account</p>
-  </div>
+<div class="app-container">
 
-  <!-- TODO -->
-  <div id="todoBox" class="glass hidden">
-    <h2>🔥 My Todos</h2>
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="logo"><i class="fas fa-check-double"></i> ZenTask</div>
+    <div class="menu-item active" onclick="filterTasks('all')">All Tasks</div>
+    <div class="menu-item" onclick="filterTasks('work')">Work</div>
+    <div class="menu-item" onclick="filterTasks('personal')">Personal</div>
+    <div class="menu-item" onclick="filterTasks('completed')">Completed</div>
+  </aside>
 
-    <div class="add">
-      <input id="todoInput" placeholder="New task..." />
-      <button onclick="addTodo()">+</button>
+  <!-- MAIN -->
+  <main>
+    <div class="header-top">
+      <div>
+        <h2 id="welcomeText">Namaste 👋</h2>
+        <p id="dateText"></p>
+      </div>
+      <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+      </div>
     </div>
 
-    <ul id="todoList"></ul>
+    <!-- ADD TASK -->
+    <div class="add-task-box">
+      <input id="taskInput" placeholder="Naya task likhein...">
+      <button onclick="addNewTask()">Add</button>
+    </div>
 
-    <button class="logout" onclick="logout()">Logout</button>
-  </div>
-
+    <!-- TASK LIST -->
+    <div class="task-list" id="taskList"></div>
+  </main>
 </div>
 
-<script src="script.js"></script>
+<!-- JS -->
+<script src="app.js"></script>
 </body>
 </html>
