@@ -1,14 +1,25 @@
-import User from "../models/User.js";
+import Todo from "../models/Todo.js";
 
-export const getUsers = async (req, res) => {
-  res.json(await User.find());
+// GET
+export const getTodos = async (req, res) => {
+  const todos = await Todo.find({ user: req.user.id });
+  res.json(todos);
 };
 
-export const addUser = async (req, res) => {
-  res.json(await User.create(req.body));
+// POST
+export const addTodo = async (req, res) => {
+  const todo = await Todo.create({
+    text: req.body.text,
+    user: req.user.id
+  });
+  res.json(todo);
 };
 
-export const deleteUser = async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
+// DELETE
+export const deleteTodo = async (req, res) => {
+  await Todo.deleteOne({
+    _id: req.params.id,
+    user: req.user.id
+  });
   res.json({ success: true });
 };
