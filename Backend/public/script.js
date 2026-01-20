@@ -1,42 +1,66 @@
-const API = "/api/users";
+let todos = [];
+let filter = "all";
 
-async function loadUsers() {
-  const res = await fetch(API);
-  const data = await res.json();
+const input = document.getElementById("taskInput");
+const list = document.getElementById("todoList");
+const count = document.getElementById("count");
 
-  const list = document.getElementById("users");
-  list.innerHTML = "";
+function addTodo(){
+  const text = input.value.trim();
+  if(!text) return;
 
-  data.forEach(u => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <span>${u.name} <br><small>${u.email}</small></span>
-      <span class="delete" onclick="deleteUser('${u._id}')">✖</span>
+  todos.push({
+    id:Date.now(),
+    text,
+    done:false
+  });
+
+  input.value="";
+  render();
+}
+
+function toggle(id){
+  todos = todos.map(t =>
+    t.id===id ? {...t,done:!t.done} : t
+  );
+  render();
+}
+
+function del(id){
+  todos = todos.filter(t=>t.id!==id);
+  render();
+}
+
+function clearDone(){
+  todos = todos.filter(t=>!t.done);
+  render();
+}
+
+function filterTodos(f){
+  filter=f;
+  document.querySelectorAll(".filters button")
+    .forEach(b=>b.classList.remove("active"));
+  event.target.classList.add("active");
+  render();
+}
+
+function render(){
+  list.innerHTML="";
+
+  let filtered = todos;
+  if(filter==="active") filtered=todos.filter(t=>!t.done);
+  if(filter==="done") filtered=todos.filter(t=>t.done);
+
+  filtered.forEach(t=>{
+    const li=document.createElement("li");
+    if(t.done) li.classList.add("done");
+
+    li.innerHTML=`
+      <span onclick="toggle(${t.id})">${t.text}</span>
+      <button onclick="del(${t.id})">✕</button>
     `;
     list.appendChild(li);
   });
+
+  count.innerText = `${todos.length} tasks`;
 }
-
-async function addUser() {
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-
-  if (!name || !email) return alert("Fill all fields");
-
-  await fetch(API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email })
-  });
-
-  document.getElementById("name").value = "";
-  document.getElementById("email").value = "";
-  loadUsers();
-}
-
-async function deleteUser(id) {
-  await fetch(API + "/" + id, { method: "DELETE" });
-  loadUsers();
-}
-
-loadUsers();
