@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Outfit', sans-serif;
 }
 
 body {
@@ -13,150 +13,99 @@ body {
   align-items: center;
 }
 
-.app {
+.app-container {
   width: 100%;
-  max-width: 380px;
-  padding: 20px;
-}
-
-.glass {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(18px);
+  max-width: 900px;
+  background: #fff;
+  display: grid;
+  grid-template-columns: 260px 1fr;
   border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,.25);
+}
+
+aside {
+  background: #f1f5f9;
   padding: 25px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-  color: #fff;
 }
 
-.hidden {
-  display: none;
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 30px;
 }
 
-/* ---------- AUTH ---------- */
-#authBox h2 {
-  text-align: center;
+.menu-item {
+  padding: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.menu-item.active {
+  background: #6366f1;
+  color: white;
+}
+
+main {
+  padding: 30px;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 20px;
 }
 
-#authBox input {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 12px;
-  border-radius: 12px;
-  border: none;
-  outline: none;
-  font-size: 15px;
-}
-
-#authBox button {
-  width: 100%;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  background: #000;
-  color: #fff;
-  font-size: 16px;
-  font-weight: bold;
+.theme-toggle {
   cursor: pointer;
 }
 
-#authBox p {
-  margin-top: 14px;
-  text-align: center;
-  opacity: 0.9;
-  cursor: pointer;
-}
-
-/* ---------- TODO ---------- */
-#todoBox h2 {
-  text-align: center;
-  margin-bottom: 18px;
-}
-
-.add {
+.add-task-box {
   display: flex;
   gap: 10px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
-.add input {
+.add-task-box input {
   flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.add-task-box button {
+  padding: 12px 20px;
+  border: none;
+  background: #6366f1;
+  color: white;
+  border-radius: 10px;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-card {
+  background: #f8fafc;
   padding: 14px;
-  border-radius: 14px;
-  border: none;
-  outline: none;
-  font-size: 15px;
-}
-
-.add button {
-  width: 52px;
-  border-radius: 14px;
-  border: none;
-  background: #000;
-  color: #fff;
-  font-size: 22px;
-  cursor: pointer;
-}
-
-/* ---------- TODO LIST ---------- */
-.todo-list {
-  list-style: none;
-  max-height: 260px;
-  overflow-y: auto;
-}
-
-.todo-list li {
-  background: rgba(255, 255, 255, 0.85);
-  color: #111;
-  padding: 14px 16px;
-  border-radius: 14px;
-  margin-bottom: 12px;
+  border-radius: 12px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  animation: fadeIn 0.3s ease;
 }
 
-.todo-list span {
-  font-size: 15px;
-  word-break: break-word;
+.task-card.completed {
+  text-decoration: line-through;
+  opacity: .6;
 }
 
-/* ❌ Delete button (small & clean) */
-.todo-list button {
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #e11d48;
-}
-
-.todo-list button:hover {
-  transform: scale(1.2);
-}
-
-/* ---------- LOGOUT ---------- */
-.logout {
-  margin-top: 20px;
-  width: 100%;
-  padding: 14px;
-  border-radius: 16px;
-  border: none;
-  background: #e11d48;
-  color: #fff;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-/* ---------- ANIMATION ---------- */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+@media(max-width:768px) {
+  .app-container {
+    grid-template-columns: 1fr;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  aside {
+    display: none;
   }
 }
