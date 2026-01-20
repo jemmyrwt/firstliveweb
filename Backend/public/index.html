@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZenTask</title>
 
-  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -19,10 +15,15 @@
 <div id="authBox" class="auth-box">
   <h2 id="authTitle">🔐 Login</h2>
 
+  <!-- 👇 REGISTER के लिए -->
+  <input id="name" class="hidden" placeholder="Name">
+
   <input id="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
 
-  <button onclick="login()">Login</button>
+  <!-- ❗ VERY IMPORTANT -->
+  <button type="button" id="authBtn" onclick="login()">Login</button>
+
   <p onclick="toggleAuth()">Create account</p>
 </div>
 
@@ -45,15 +46,16 @@
 
       <div class="add-task-box">
         <input id="taskInput" placeholder="New task...">
-        <button onclick="addTodo()">Add</button>
+        <button type="button" onclick="addNewTask()">Add</button>
       </div>
 
-      <ul id="taskList"></ul>
+      <div id="taskList"></div>
     </main>
 
   </div>
 </div>
 
+<!-- JS LAST -->
 <script src="app.js"></script>
 </body>
 </html>
