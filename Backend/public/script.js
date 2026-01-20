@@ -1,66 +1,78 @@
-let todos = [];
-let filter = "all";
+const API = "https://firstliveweb.onrender.com";
+let token = localStorage.getItem("token");
 
-const input = document.getElementById("taskInput");
-const list = document.getElementById("todoList");
-const count = document.getElementById("count");
+const authBox = document.getElementById("authBox");
+const todoBox = document.getElementById("todoBox");
+const todoList = document.getElementById("todoList");
 
-function addTodo(){
-  const text = input.value.trim();
-  if(!text) return;
+if (token) showTodos();
 
-  todos.push({
-    id:Date.now(),
-    text,
-    done:false
+function toggleAuth() {
+  alert("Register API use karo (same as login, POST /register)");
+}
+
+async function login() {
+  const email = email.value;
+  const password = password.value;
+
+  const res = await fetch(API + "/api/users/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
   });
 
-  input.value="";
-  render();
+  const data = await res.json();
+  token = data.token;
+  localStorage.setItem("token", token);
+  showTodos();
 }
 
-function toggle(id){
-  todos = todos.map(t =>
-    t.id===id ? {...t,done:!t.done} : t
-  );
-  render();
+function showTodos() {
+  authBox.classList.add("hidden");
+  todoBox.classList.remove("hidden");
+  loadTodos();
 }
 
-function del(id){
-  todos = todos.filter(t=>t.id!==id);
-  render();
+async function loadTodos() {
+  const res = await fetch(API + "/api/todos", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const todos = await res.json();
+  todoList.innerHTML = "";
+  todos.forEach(t => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span>${t.text}</span>
+      <button onclick="delTodo('${t._id}')">❌</button>`;
+    todoList.appendChild(li);
+  });
 }
 
-function clearDone(){
-  todos = todos.filter(t=>!t.done);
-  render();
-}
+async function addTodo() {
+  const text = todoInput.value;
+  if (!text) return;
 
-function filterTodos(f){
-  filter=f;
-  document.querySelectorAll(".filters button")
-    .forEach(b=>b.classList.remove("active"));
-  event.target.classList.add("active");
-  render();
-}
-
-function render(){
-  list.innerHTML="";
-
-  let filtered = todos;
-  if(filter==="active") filtered=todos.filter(t=>!t.done);
-  if(filter==="done") filtered=todos.filter(t=>t.done);
-
-  filtered.forEach(t=>{
-    const li=document.createElement("li");
-    if(t.done) li.classList.add("done");
-
-    li.innerHTML=`
-      <span onclick="toggle(${t.id})">${t.text}</span>
-      <button onclick="del(${t.id})">✕</button>
-    `;
-    list.appendChild(li);
+  await fetch(API + "/api/todos", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ text })
   });
 
-  count.innerText = `${todos.length} tasks`;
+  todoInput.value = "";
+  loadTodos();
+}
+
+async function delTodo(id) {
+  await fetch(API + "/api/todos/" + id, {
+    method: "DELETE",
+    headers: { Authorization: "Bearer " + token }
+  });
+  loadTodos();
+}
+
+function logout() {
+  localStorage.removeItem("token");
+  location.reload();
 }
