@@ -2,7 +2,9 @@ import jwt from "jsonwebtoken";
 
 export default function auth(req, res, next) {
   const header = req.headers.authorization;
-  if (!header) return res.status(401).json({ msg: "No token" });
+  if (!header) {
+    return res.status(401).json({ msg: "No token" });
+  }
 
   const token = header.split(" ")[1];
 
@@ -10,7 +12,7 @@ export default function auth(req, res, next) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
-  } catch {
+  } catch (err) {
     res.status(401).json({ msg: "Invalid token" });
   }
 }
