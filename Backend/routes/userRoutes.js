@@ -1,24 +1,24 @@
 import express from "express";
+import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 const router = express.Router();
 
-// GET users
-router.get("/", async (req, res) => {
-  const users = await User.find();
-  res.json(users);
-});
+router.post("/login", async (req, res) => {
+  const { email } = req.body;
 
-// ADD user
-router.post("/", async (req, res) => {
-  const user = await User.create(req.body);
-  res.json(user);
-});
+  let user = await User.findOne({ email });
+  if (!user) {
+    user = await User.create({ email });
+  }
 
-// DELETE user
-router.delete("/:id", async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
-  res.json({ message: "User deleted" });
+  const token = jwt.sign(
+    { id: user._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  res.json({ token });
 });
 
 export default router;
