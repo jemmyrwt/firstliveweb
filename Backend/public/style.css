@@ -1,87 +1,162 @@
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
-  font-family: system-ui, sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 body {
   min-height: 100vh;
-  background: linear-gradient(135deg,#667eea,#764ba2);
+  background: linear-gradient(135deg, #667eea, #764ba2);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
 }
 
 .app {
   width: 100%;
-  max-width: 420px;
+  max-width: 380px;
+  padding: 20px;
 }
 
 .glass {
-  backdrop-filter: blur(20px);
-  background: rgba(255,255,255,0.25);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(18px);
   border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,.25);
-}
-
-h2 {
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-input {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
-  margin-bottom: 10px;
-}
-
-button {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
-  background: #111;
-  color: white;
-  font-size: 16px;
-}
-
-.add {
-  display: flex;
-  gap: 8px;
-}
-
-.add input {
-  flex: 1;
-}
-
-.add button {
-  width: 50px;
-  font-size: 24px;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 16px;
-}
-
-li {
-  background: rgba(255,255,255,.8);
-  padding: 12px;
-  border-radius: 10px;
-  margin-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.logout {
-  margin-top: 14px;
-  background: crimson;
+  padding: 25px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  color: #fff;
 }
 
 .hidden {
   display: none;
+}
+
+/* ---------- AUTH ---------- */
+#authBox h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#authBox input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  font-size: 15px;
+}
+
+#authBox button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: #000;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#authBox p {
+  margin-top: 14px;
+  text-align: center;
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+/* ---------- TODO ---------- */
+#todoBox h2 {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.add {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.add input {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  outline: none;
+  font-size: 15px;
+}
+
+.add button {
+  width: 52px;
+  border-radius: 14px;
+  border: none;
+  background: #000;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* ---------- TODO LIST ---------- */
+.todo-list {
+  list-style: none;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.todo-list li {
+  background: rgba(255, 255, 255, 0.85);
+  color: #111;
+  padding: 14px 16px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.todo-list span {
+  font-size: 15px;
+  word-break: break-word;
+}
+
+/* ❌ Delete button (small & clean) */
+.todo-list button {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #e11d48;
+}
+
+.todo-list button:hover {
+  transform: scale(1.2);
+}
+
+/* ---------- LOGOUT ---------- */
+.logout {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 16px;
+  border: none;
+  background: #e11d48;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ---------- ANIMATION ---------- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
