@@ -1,146 +1,151 @@
+:root {
+  --primary:#6366f1;
+  --bg:#070a13;
+  --card:#121826;
+  --text:#f8fafc;
+  --border:rgba(255,255,255,.08);
+}
+
 * {
-  box-sizing: border-box;
-  font-family: 'Outfit', sans-serif;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Plus Jakarta Sans',sans-serif;
 }
 
 body {
-  margin: 0;
-  background: linear-gradient(135deg,#6366f1,#8b5cf6);
-  min-height: 100vh;
+  background:var(--bg);
+  color:var(--text);
 }
 
-/* AUTH */
-.auth-box {
-  background: white;
-  max-width: 380px;
-  margin: 80px auto;
-  padding: 25px;
-  border-radius: 18px;
-  box-shadow: 0 20px 40px rgba(0,0,0,.25);
+/* ===== AUTH ===== */
+.auth-screen {
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-.auth-box h2 {
-  text-align: center;
+.auth-card {
+  background:var(--card);
+  padding:40px;
+  width:100%;
+  max-width:360px;
+  border-radius:22px;
+  border:1px solid var(--border);
+  text-align:center;
 }
 
-.auth-box input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 12px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
+.auth-card h1 {
+  color:var(--primary);
+  margin-bottom:10px;
 }
 
-.password-box {
-  position: relative;
+.auth-card input {
+  width:100%;
+  padding:14px;
+  margin-bottom:12px;
+  border-radius:14px;
+  background:#070a13;
+  border:1px solid var(--border);
+  color:white;
 }
 
-.password-box span {
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  cursor: pointer;
+.auth-card button {
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  background:var(--primary);
+  color:white;
+  border:none;
+  font-weight:700;
 }
 
-.auth-box button {
-  width: 100%;
-  padding: 12px;
-  background: #6366f1;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
+.switch {
+  margin-top:15px;
+  color:var(--primary);
+  cursor:pointer;
 }
 
-.auth-box p {
-  text-align: center;
-  margin-top: 10px;
-  color: #6366f1;
-  cursor: pointer;
+.hidden { display:none; }
+
+/* ===== APP ===== */
+.app-shell {
+  display:grid;
+  grid-template-columns:240px 1fr;
+  height:100vh;
 }
 
-/* TODO APP */
-.hidden { display: none; }
-
-.app-container {
-  display: flex;
-  min-height: 100vh;
+.sidebar {
+  background:#070a13;
+  padding:30px;
+  border-right:1px solid var(--border);
 }
 
-aside {
-  width: 220px;
-  background: #1e1b4b;
-  color: white;
-  padding: 20px;
+.logo {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:var(--primary);
+  font-size:1.4rem;
+  margin-bottom:40px;
 }
 
-.logout {
-  margin-top: 20px;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 8px;
-  background: #ef4444;
-  color: white;
+.logo-box {
+  background:var(--primary);
+  color:white;
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-main {
-  flex: 1;
-  padding: 30px;
-  background: #f8fafc;
+.nav-btn {
+  padding:12px;
+  border-radius:12px;
+  cursor:pointer;
 }
 
-.add-task {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+.workspace {
+  padding:40px;
 }
 
-.add-task input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+.task-creator {
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
 }
 
-.add-task button {
-  padding: 10px 16px;
-  border-radius: 8px;
-  border: none;
-  background: #10b981;
-  color: white;
+.task-creator input {
+  flex:1;
+  padding:14px;
+  border-radius:14px;
+  background:#070a13;
+  border:1px solid var(--border);
+  color:white;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
+.task-creator button {
+  width:60px;
+  border-radius:14px;
+  background:var(--primary);
+  color:white;
+  border:none;
+  font-size:1.5rem;
 }
 
-li {
-  background: white;
-  padding: 12px;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
+.task-grid {
+  display:grid;
+  gap:12px;
 }
 
-/* TOAST */
-.toast {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 14px 22px;
-  border-radius: 12px;
-  color: white;
-  animation: slideUp .3s ease;
-}
-
-.toast.success { background: #16a34a; }
-.toast.error { background: #dc2626; }
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translate(-50%,20px); }
-  to { opacity: 1; transform: translate(-50%,0); }
+.task-card {
+  background:var(--card);
+  padding:14px;
+  border-radius:14px;
+  display:flex;
+  justify-content:space-between;
 }
